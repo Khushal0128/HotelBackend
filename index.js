@@ -11,7 +11,7 @@ const PORT = process.env.PORT;
 
 
 app.get("/",(req,res)=>{
-    res.json({message:"hello api"});
+    res.json({message:"hello user"});
 })
 
 app.use(express.json());
