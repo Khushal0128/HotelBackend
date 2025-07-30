@@ -17,7 +17,10 @@ const handleUser = async (req,res)=>{
         const SALT =await bcrypt.genSalt(Number(process.env.SALT));
         const hashedPassword = await bcrypt.hash(password,SALT);
 
-        const createUser = User.create({username,email,password:hashedPassword});
+        const createUser =await User.create({username,email,password:hashedPassword});
+        if(!createUser){
+            return res.json({"message":"creation error","success":false});
+        }
         return res.json({"message":"User Successfully Created"});
     } catch (error) {
         return res.json({"message":"something went wrong","error":`${error.message}`});
@@ -27,12 +30,6 @@ const handleUser = async (req,res)=>{
 const UserLogin = async (req,res)=>{
     let {email,password} = req.body;
 
-    // let isValid = req.cookies;
-    // console.log(isValid);
-    // if(!req.signedCookies.token){
-    //     res.json({"message":"Unauthorized User"});
-    // }
-
     try {
 
         let isExist =await User.findOne({email});
@@ -41,6 +38,9 @@ const UserLogin = async (req,res)=>{
         }
         
         const GetUser = await User.findOne({email});
+
+        // console.log(GetUser);
+
         let isSamePassword =await bcrypt.compare(password,GetUser.password);
         if(!isSamePassword){
             return res.json({ message: "Invalid email or password" });
@@ -102,8 +102,30 @@ const UserProfile = async (req,res)=>{
 const UpdateUserInfo = async (req,res)=>{
     // let {id} = req.prams;
     let {id} = req.params;
+    let {username,email} = req.body;
+
+    const checkEmail = await User.findOne({email}).countDocuments();
+
+    const isExistUser = await User.findById(id);
+    
+    if(!isExistUser){
+        return res.json({"message":"User Is Not Found","success":false});
+    }
+
+    // Check if the email is already used by another user
+    if (checkEmail > 0) {
+        return res.status(400).json({ message: "Email is already in use", success: false });
+    }
+
+    let Updateuser = await User.findByIdAndUpdate(id,{username,email}, { new: true } );
+
+    if(!Updateuser){
+        return res.json({"message":"someting went wrong"});
+    }
+  
     return res.json({
-        "message":`update User info ${id}`
+        "message":`update User info ${id}`,
+        "user":Updateuser
     });
 }
 

@@ -12,7 +12,7 @@ UserRouter.post("/login",UserLogin);
 UserRouter.post("/profile",isLoggedin,UserProfile);
 
 //Update
-UserRouter.put("/profile/:id",UpdateUserInfo);
+UserRouter.post("/profile/:id",isLoggedin,UpdateUserInfo);
 
 //logout user
 UserRouter.get('/logout',logoutUser);

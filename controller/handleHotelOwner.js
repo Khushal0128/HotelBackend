@@ -43,6 +43,8 @@ const handleHotelLogin = async (req,res) =>{
 
         const isExist = await HotelOwner.findOne({Hoemail:hotelowneremail});
 
+        console.log(isExist);
+
         if(!isExist){
             return res.json({"message":"User Is Not Found"});
         }
@@ -79,10 +81,29 @@ const handleHotelLogin = async (req,res) =>{
     }
 }
 const getHotelProfile = async (req,res) =>{
+    try {
+        let isExistToken = req.signedCookies.token;
+        if(!isExistToken){
+            return res.json({"message":"UnAuthenticate User"});
+        }
+        let decode = jwt.verify(isExistToken,process.env.SECRET);
 
+        const id = decode.id;
+        let getHotelOwner = await HotelOwner.findById(id).select("-password");
+
+        if(!getHotelOwner){
+            return res.json({"message":"User Is Not Matched"})
+        }
+
+        return res.json({"message":"User Fetched SuccessFully","user":getHotelOwner});
+
+    } catch (error) {
+        return res.json({"message":`something went wrond ${error.message}`});
+    }   
 }
 const modifyHotelInfo = async (req,res) =>{
-
+    const {hotelownername,hotelowneremail,hotelname,password,city} = req.body;
+    
 }
 
 const logoutHotelOwner = async (req,res) =>{
