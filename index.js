@@ -9,7 +9,10 @@ env.config();
 const UserRouter = require("./routes/client");
 const HotelOwnerRouter = require("./routes/HotelOwner");
 const PORT = process.env.PORT;
-app.use(corse());
+app.use(corse({
+    origin: "http://localhost:5173",
+    credentials: true
+}));
 
 app.get("/",(req,res)=>{
     res.json({message:"hello user"});
