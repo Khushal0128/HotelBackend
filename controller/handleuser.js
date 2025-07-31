@@ -10,7 +10,7 @@ const handleUser = async (req,res)=>{
 
     let ifExist =await User.findOne({email});
     if(ifExist){
-        return res.json({"message":"User Is Aready Exist"});
+        return res.json({"message":"User Is Aready Exist","status":409});
     }
 
     try {
@@ -21,7 +21,7 @@ const handleUser = async (req,res)=>{
         if(!createUser){
             return res.json({"message":"creation error","success":false});
         }
-        return res.json({"message":"User Successfully Created"});
+        return res.json({"message":"User Successfully Created","status":201,"success":true});
     } catch (error) {
         return res.json({"message":"something went wrong","error":`${error.message}`});
     }
