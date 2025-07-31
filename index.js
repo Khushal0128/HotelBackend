@@ -3,12 +3,13 @@ const app = express();
 const Db = require("./config/connection");
 const cookieParser = require("cookie-parser");
 const env = require("dotenv");
+const corse = require("cors");
 env.config();
 
 const UserRouter = require("./routes/client");
 const HotelOwnerRouter = require("./routes/HotelOwner");
 const PORT = process.env.PORT;
-
+app.use(corse());
 
 app.get("/",(req,res)=>{
     res.json({message:"hello user"});

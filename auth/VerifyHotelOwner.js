@@ -9,6 +9,7 @@ const verifyHotelOwner = async (req,res,next) =>{
         let decode = jwt.verify(isToken,process.env.SECRET);
         
          // ✅ ALLOW only if role is hotelOwner
+         console.log(decode.role);
          if (decode.payload.role !== "hotelOwner") {
             return res.status(403).json({ message: "Access denied: Not a hotel owner", success: false });
         }
